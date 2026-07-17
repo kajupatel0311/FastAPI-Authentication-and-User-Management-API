@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual Environment
+venv/
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Uploads
+app/uploads/profile_images/
+
+# Docker
+*.tar
+
+# OS
+.DS_Store
+Thumbs.db
