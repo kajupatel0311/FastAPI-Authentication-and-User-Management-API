@@ -24,6 +24,7 @@ from app.utils.jwt_token import (
     verify_refresh_token,
     verify_reset_token
 )
+from app.services.email_service import send_email
 # ---------------------------------------
 # Login User
 # ---------------------------------------
@@ -193,11 +194,36 @@ async def forgot_password(
             }
         }
     )
+    
+    # Email Subject
+    subject = "Password Reset Request"
+
+    # Email Body
+    body = f"""
+    Hello {db_user['name']},
+
+    A password reset request was received for your account.
+
+    Use the following reset token to reset your password:
+
+    {reset_token}
+
+    If you did not request this password reset, you can ignore this email.
+
+    Regards,
+    FastAPI Authentication and User Management API
+    """
+
+    # Send Email
+    send_email(
+        recipient=request.email,
+        subject=subject,
+        body=body
+    )
 
     return {
         "success": True,
-        "message": "Password reset token generated successfully",
-        "reset_token": reset_token
+        "message": "Password reset email sent successfully."
     }
 
 # ---------------------------------------

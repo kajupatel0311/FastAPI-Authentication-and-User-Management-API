@@ -23,3 +23,19 @@ app/uploads/profile_images/
 # OS
 .DS_Store
 Thumbs.db
+
+.pytest_cache/
+.coverage
+coverage.xml
+
+.env.*
+!.env.example
+
+*.db
+
+dist/
+build/
+
+*.egg-info/
+
+.vscode/settings.json

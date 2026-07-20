@@ -6,6 +6,8 @@ services:
     build: .
 
     container_name: backend-project
+    env_file:
+      - .env
 
     ports:
       - "8000:8000"
@@ -20,3 +22,5 @@ services:
       RESET_TOKEN_EXPIRE_MINUTES: 15
 
     restart: unless-stopped
+
+    

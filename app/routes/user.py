@@ -1,3 +1,4 @@
+from app.schemas.update_profile_schema import UpdateProfile
 from fastapi import APIRouter, Depends, Query
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from app.auth import (
@@ -17,7 +18,8 @@ from app.services.user_service import (
     get_all_users,
     get_user_by_id,
     update_user,
-    delete_user
+    delete_user,
+    update_my_profile
 )
 
 from app.services.auth_service import (
@@ -98,6 +100,19 @@ async def profile(
 
 
 # ---------------------------------------
+# Get My Profile
+# ---------------------------------------
+@router.get("/me")
+async def get_my_profile(
+    current_user=Depends(get_current_user)
+):
+
+    return await get_user_profile(
+        current_user["email"]
+    )
+
+
+# ---------------------------------------
 # Change Password
 # ---------------------------------------
 @router.put("/change-password")
@@ -151,6 +166,20 @@ async def read_users(
         search,
         sort,
         domain
+    )
+
+# ---------------------------------------
+# Update My Profile
+# ---------------------------------------
+@router.put("/me")
+async def edit_my_profile(
+    profile: UpdateProfile,
+    current_user=Depends(get_current_user)
+):
+
+    return await update_my_profile(
+        current_user["email"],
+        profile
     )
 # ---------------------------------------
 # Get User By ID

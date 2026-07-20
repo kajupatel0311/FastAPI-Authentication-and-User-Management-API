@@ -267,3 +267,89 @@ async def delete_user(user_id: str):
         "success": True,
         "message": "User Deleted Successfully"
     }
+
+# ---------------------------------------
+# Update Logged-in User Profile
+# ---------------------------------------
+async def update_my_profile(
+    email: str,
+    profile
+):
+
+    # Find current user
+    db_user = await users_collection.find_one(
+        {
+            "email": email
+        }
+    )
+
+    if db_user is None:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+
+    update_data = {}
+
+    # ----------------------------
+    # Update Name
+    # ----------------------------
+    if profile.name is not None:
+        update_data["name"] = profile.name
+
+    # ----------------------------
+    # Update Email
+    # ----------------------------
+    if (
+        profile.email is not None
+        and profile.email != email
+    ):
+
+        existing_user = await users_collection.find_one(
+            {
+                "email": profile.email
+            }
+        )
+
+        if existing_user:
+            raise HTTPException(
+                status_code=400,
+                detail="Email already exists."
+            )
+
+        update_data["email"] = profile.email
+
+    # ----------------------------
+    # Update Database
+    # ----------------------------
+    if update_data:
+
+        await users_collection.update_one(
+            {
+                "email": email
+            },
+            {
+                "$set": update_data
+            }
+        )
+
+    # ----------------------------
+    # Return Updated User
+    # ----------------------------
+    updated_user = await users_collection.find_one(
+        {
+            "email": update_data.get("email", email)
+        }
+    )
+
+    return {
+        "success": True,
+        "message": "Profile updated successfully",
+        "data": {
+            "id": str(updated_user["_id"]),
+            "name": updated_user["name"],
+            "email": updated_user["email"],
+            "role": updated_user["role"],
+            "profile_image": updated_user.get("profile_image")
+        }
+    }
