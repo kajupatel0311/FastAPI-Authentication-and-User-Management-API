@@ -1,13 +1,18 @@
+from pathlib import Path
+
+from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+
 from app.database import check_database_connection
+from app.middleware import log_requests
+from app.exceptions import register_exception_handlers
+
 from app.routes.user import router as user_router
 from app.routes.upload import router as upload_router
-from app.middleware import log_requests
-from fastapi.exceptions import RequestValidationError
-from app.exceptions import register_exception_handlers
-from fastapi.middleware.cors import CORSMiddleware
 from app.routes.dashboard import router as dashboard_router
+
+
 app = FastAPI(
     title="FastAPI Authentication and User Management API",
     description="""
@@ -25,28 +30,50 @@ app = FastAPI(
     }
 )
 
+# ---------------------------------------
+# CORS
+# ---------------------------------------
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "https://your-frontend.vercel.app",
+        "https://fast-api-authentication-and-user-ma-ten.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ---------------------------------------
+# Global Exception Handlers
+# ---------------------------------------
+
 register_exception_handlers(app)
+
+# ---------------------------------------
+# Upload Directory
+# ---------------------------------------
+
+UPLOAD_DIR = Path("app/uploads")
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
 app.mount(
     "/uploads",
-    StaticFiles(directory="app/uploads"),
+    StaticFiles(directory=str(UPLOAD_DIR)),
     name="uploads"
 )
 
-# Register Middleware
+# ---------------------------------------
+# Middleware
+# ---------------------------------------
+
 app.middleware("http")(log_requests)
 
+# ---------------------------------------
+# Routes
+# ---------------------------------------
 
-# Register Routes
 app.include_router(
     user_router,
     prefix="/api/v1"
@@ -62,6 +89,10 @@ app.include_router(
     prefix="/api/v1"
 )
 
+# ---------------------------------------
+# Home
+# ---------------------------------------
+
 @app.get("/")
 async def home():
 
@@ -73,6 +104,7 @@ async def home():
 # ---------------------------------------
 # Health Check
 # ---------------------------------------
+
 @app.get("/health")
 async def health_check():
 
@@ -83,3 +115,4 @@ async def health_check():
         "application": "running",
         "database": "connected" if db_status else "disconnected"
     }
+
