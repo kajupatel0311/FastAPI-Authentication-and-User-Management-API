@@ -11,20 +11,23 @@ function ProtectedRoute({
   children,
 }: ProtectedRouteProps) {
 
-  const { isAuthenticated } = useAuth();
+  useAuth();
 
   const token = getAccessToken();
 
   if (!token) {
+
     return (
       <Navigate
         to="/login"
         replace
       />
     );
+
   }
 
   return children;
+
 }
 
 export default ProtectedRoute;
