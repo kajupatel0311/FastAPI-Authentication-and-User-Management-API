@@ -1,46 +1,74 @@
 # FastAPI Authentication and User Management API
 
-## Overview
+A production-ready authentication and user management backend built with **FastAPI**, **MongoDB Atlas**, and **JWT Authentication**. The project follows a modular architecture and provides secure authentication, role-based authorization, profile management, file uploads, password recovery, logging, and Docker support.
 
-This project is a backend application developed using FastAPI and MongoDB that implements user authentication, role-based authorization, profile management, file uploads, and common REST API features. It follows a modular architecture with separate layers for routes, services, schemas, utilities, and configuration.
-
-## Technologies
-
-- Python 3
-- FastAPI
-- MongoDB
-- Motor
-- JWT Authentication
-- Passlib (bcrypt)
-- Pydantic
-- Uvicorn
-- Docker
-- Docker Compose
+---
 
 ## Features
 
-- User registration and login
-- JWT-based authentication
-- Access and refresh tokens
-- Role-based authorization
-- Password change
-- Password reset
-- Logout with token blacklist
-- User CRUD operations
+### Authentication
+- User Registration
+- Secure Login
+- JWT Access Token
+- Refresh Token
+- Logout with Token Blacklisting
+- Forgot Password
+- Reset Password
+- Change Password
+
+### User Management
+- User Profile
+- Update Profile
+- Admin User Management
+- Role-Based Access Control (Admin/User)
 - Pagination
 - Search
 - Sorting
 - Filtering
-- Profile image upload
-- File validation
-- Logging
-- Custom middleware
-- Global exception handling
-- Docker support
+
+### File Upload
+- Profile Image Upload
+- Image Validation
+- Static File Serving
+
+### Security
+- Password Hashing (bcrypt)
+- JWT Authentication
+- Role-Based Authorization
+- Global Exception Handling
+- Request Logging
+- Custom Middleware
+
+### Database
+- MongoDB Atlas
+- Motor (Async MongoDB Driver)
+
+### Deployment
+- Docker
+- Docker Compose
+- Environment Variable Configuration
+
+---
+
+## Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| Backend | FastAPI |
+| Database | MongoDB Atlas |
+| ODM | Motor |
+| Authentication | JWT |
+| Validation | Pydantic |
+| Password Hashing | Passlib (bcrypt) |
+| Server | Uvicorn |
+| Containerization | Docker |
+| API Testing | Swagger UI |
+
+---
 
 ## Project Structure
 
-```
+```text
 backend_project/
 │
 ├── app/
@@ -52,6 +80,7 @@ backend_project/
 │   ├── auth.py
 │   ├── config.py
 │   ├── database.py
+│   ├── exceptions.py
 │   ├── logger.py
 │   ├── middleware.py
 │   └── main.py
@@ -60,74 +89,57 @@ backend_project/
 ├── docker-compose.yml
 ├── requirements.txt
 ├── .env.example
+├── .gitignore
 └── README.md
 ```
 
+---
+
 ## Installation
 
-Clone the repository.
+### Clone Repository
 
 ```bash
-git clone <repository_url>
+git clone https://github.com/kajupatel0311/FastAPI-Authentication-and-User-Management-API.git
+
+cd FastAPI-Authentication-and-User-Management-API
 ```
 
-Move into the project directory.
+---
 
-```bash
-cd backend_project
-```
-
-Create a virtual environment.
-
-```bash
-python -m venv venv
-```
-
-Activate the virtual environment.
+### Create Virtual Environment
 
 Windows
 
 ```bash
+python -m venv venv
+
 venv\Scripts\activate
 ```
 
 Linux/macOS
 
 ```bash
+python3 -m venv venv
+
 source venv/bin/activate
 ```
 
-Install the required packages.
+---
+
+### Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Create a `.env` file using `.env.example` and update the required values.
+---
 
-Run the application.
+### Configure Environment Variables
 
-```bash
-uvicorn app.main:app --reload
-```
+Create a `.env` file.
 
-Open the API documentation.
-
-```
-http://127.0.0.1:8000/docs
-```
-
-## Running with Docker
-
-Build and start the application.
-
-```bash
-docker compose up --build
-```
-
-## Environment Variables
-
-```
+```env
 MONGO_URI=
 DATABASE_NAME=
 
@@ -137,23 +149,116 @@ ALGORITHM=
 ACCESS_TOKEN_EXPIRE_MINUTES=
 REFRESH_TOKEN_EXPIRE_DAYS=
 RESET_TOKEN_EXPIRE_MINUTES=
+
+SMTP_EMAIL=
+SMTP_PASSWORD=
+SMTP_SERVER=
+SMTP_PORT=
 ```
+
+---
+
+### Run the Application
+
+```bash
+uvicorn app.main:app --reload
+```
+
+Server
+
+```
+http://127.0.0.1:8000
+```
+
+Swagger UI
+
+```
+http://127.0.0.1:8000/docs
+```
+
+ReDoc
+
+```
+http://127.0.0.1:8000/redoc
+```
+
+---
+
+## Docker
+
+Build and Run
+
+```bash
+docker compose up --build
+```
+
+Stop Containers
+
+```bash
+docker compose down
+```
+
+---
 
 ## API Modules
 
 - Authentication
 - User Management
+- Dashboard
+- Profile Management
 - File Upload
 
-## Future Improvements
+---
 
-- Email verification
-- OTP-based password reset
-- Unit testing
-- Cloud storage for uploaded files
-- CI/CD pipeline
-- Deployment on cloud platform
+## Authentication Flow
+
+```
+Register
+      │
+      ▼
+Login
+      │
+      ▼
+Access Token + Refresh Token
+      │
+      ▼
+Protected APIs
+      │
+      ▼
+Refresh Token
+      │
+      ▼
+Logout
+```
+
+---
+
+## Future Enhancements
+
+- Email Verification
+- OTP Authentication
+- Two-Factor Authentication
+- Audit Logs Dashboard
+- Rate Limiting
+- Unit Testing
+- CI/CD Pipeline
+- Cloud Storage (AWS S3 / Cloudinary)
+- Kubernetes Deployment
+
+---
+
+## Author
+
+**Kaju Patel**
+
+Email: kajupatel2003@gmail.com
+
+GitHub:
+https://github.com/kajupatel0311
+
+---
 
 ## License
 
-This project was developed for learning backend development concepts using FastAPI.
+This project is licensed under the MIT License.
+

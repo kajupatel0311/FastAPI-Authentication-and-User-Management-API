@@ -6,6 +6,8 @@ from app.routes.upload import router as upload_router
 from app.middleware import log_requests
 from fastapi.exceptions import RequestValidationError
 from app.exceptions import register_exception_handlers
+from fastapi.middleware.cors import CORSMiddleware
+from app.routes.dashboard import router as dashboard_router
 app = FastAPI(
     title="FastAPI Authentication and User Management API",
     description="""
@@ -21,6 +23,17 @@ app = FastAPI(
     license_info={
         "name": "MIT License"
     }
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "https://your-frontend.vercel.app",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 register_exception_handlers(app)
 app.mount(
@@ -41,6 +54,11 @@ app.include_router(
 
 app.include_router(
     upload_router,
+    prefix="/api/v1"
+)
+
+app.include_router(
+    dashboard_router,
     prefix="/api/v1"
 )
 

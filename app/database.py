@@ -27,6 +27,8 @@ db = client[DATABASE_NAME]
 # ---------------------------------------
 users_collection = db["users"]
 
+audit_logs_collection = db["audit_logs"]
+
 
 # ---------------------------------------
 # Database Health Check
@@ -37,10 +39,16 @@ async def check_database_connection():
 
         await db.command("ping")
 
+        print("✅ MongoDB Atlas Connected Successfully.")
+
         return True
 
-    except Exception:
+    except Exception as e:
+
+        print("\n==============================")
+        print("MongoDB Connection Error")
+        print("==============================")
+        print(repr(e))
+        print("==============================\n")
 
         return False
-    
-    

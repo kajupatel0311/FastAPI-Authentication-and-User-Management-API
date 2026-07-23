@@ -20,11 +20,10 @@ async def register_user(user: UserCreate):
     )
 
     if existing_user:
-        return {
-            "success": False,
-            "message": "Email already registered"
-        }
-
+        raise HTTPException(
+            status_code=409,
+            detail="Email already registered"
+        )
     new_user = {
     "name": user.name,
     "email": user.email,
@@ -98,7 +97,10 @@ async def get_all_users(
         sort_order = -1
         sort_field = sort[1:]
 
-    allowed_fields = ["name", "email"]
+    allowed_fields = [
+        "name",
+        "email"
+    ]
 
     if sort_field not in allowed_fields:
         sort_field = "name"
@@ -121,7 +123,9 @@ async def get_all_users(
             {
                 "id": str(user["_id"]),
                 "name": user["name"],
-                "email": user["email"]
+                "email": user["email"],
+                "role": user.get("role", "user"),
+                "profile_image": user.get("profile_image")
             }
         )
 
@@ -134,7 +138,6 @@ async def get_all_users(
         "domain": domain,
         "users": users
     }
-
 # ---------------------------------------
 # Get User By ID
 # ---------------------------------------
@@ -142,11 +145,13 @@ async def get_user_by_id(user_id: str):
 
     try:
         object_id = ObjectId(user_id)
+
     except InvalidId:
-        return {
-            "success": False,
-            "message": "Invalid User ID"
-        }
+
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid User ID"
+        )
 
     user = await users_collection.find_one(
         {
@@ -155,15 +160,18 @@ async def get_user_by_id(user_id: str):
     )
 
     if user is None:
-     raise HTTPException(
-        status_code=404,
-        detail="User not found"
-    )
+
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
 
     return {
         "id": str(user["_id"]),
         "name": user["name"],
-        "email": user["email"]
+        "email": user["email"],
+        "role": user.get("role", "user"),
+        "profile_image": user.get("profile_image")
     }
 
 
@@ -196,9 +204,17 @@ async def update_user(user_id: str, user: UpdateUser):
 
     if user.name is not None:
         update_data["name"] = user.name
-
-    if user.email is not None:
-        update_data["email"] = user.email
+        
+    # ----------------------------
+    # Update Role
+    # ---------------------------- 
+    if user.role is not None:
+        if user.role not in ["admin", "user"]:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid role."
+            )
+        update_data["role"] = user.role
 
     if not update_data:
         return {
@@ -222,14 +238,16 @@ async def update_user(user_id: str, user: UpdateUser):
     )
 
     return {
-        "success": True,
-        "message": "User Updated Successfully",
-        "user": {
-            "id": str(updated_user["_id"]),
-            "name": updated_user["name"],
-            "email": updated_user["email"]
-        }
+    "success": True,
+    "message": "User Updated Successfully",
+    "user": {
+        "id": str(updated_user["_id"]),
+        "name": updated_user["name"],
+        "email": updated_user["email"],
+        "role": updated_user.get("role", "user"),
+        "profile_image": updated_user.get("profile_image")
     }
+}
 
 
 # ---------------------------------------
@@ -353,3 +371,4 @@ async def update_my_profile(
             "profile_image": updated_user.get("profile_image")
         }
     }
+

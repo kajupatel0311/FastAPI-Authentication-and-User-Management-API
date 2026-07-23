@@ -216,3 +216,4 @@ async def remove_user(
 ):
 
     return await delete_user(user_id)
+

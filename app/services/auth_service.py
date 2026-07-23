@@ -89,12 +89,17 @@ async def get_user_profile(email: str):
     )
 
     if db_user is None:
-        return None
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
 
     return {
         "id": str(db_user["_id"]),
         "name": db_user["name"],
-        "email": db_user["email"]
+        "email": db_user["email"],
+        "role": db_user["role"],
+        "profile_image": db_user.get("profile_image")
     }
 
 # ---------------------------------------
