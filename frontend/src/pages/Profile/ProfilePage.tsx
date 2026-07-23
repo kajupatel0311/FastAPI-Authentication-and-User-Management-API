@@ -12,6 +12,12 @@ import type {
   UserProfile,
 } from "../../types/user";
 
+const IMAGE_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL.replace(
+    "/api/v1",
+    ""
+  );
+
 function ProfilePage() {
 
   const [user, setUser] =
@@ -50,7 +56,11 @@ function ProfilePage() {
 
     } catch (error) {
 
-      console.error("Load Profile Error:", error);
+      console.error(
+        "Load Profile Error:",
+        error
+      );
+
     } finally {
 
       setLoading(false);
@@ -72,7 +82,9 @@ function ProfilePage() {
 
       await loadProfile();
 
-      toast.success("Profile updated successfully.");
+      toast.success(
+        "Profile updated successfully."
+      );
 
     } catch (error: any) {
 
@@ -120,8 +132,6 @@ function ProfilePage() {
         </h1>
 
         <div className="grid gap-10 lg:grid-cols-2">
-
-          {/* Left Section */}
 
           <div className="space-y-6">
 
@@ -191,14 +201,12 @@ function ProfilePage() {
 
           </div>
 
-          {/* Right Section */}
-
           <div className="flex flex-col items-center justify-center">
 
             {user?.profile_image ? (
 
               <img
-                src={`http://127.0.0.1:8000${user.profile_image}`}
+                src={`${IMAGE_BASE_URL}${user.profile_image}`}
                 alt="Profile"
                 className="h-48 w-48 rounded-full border object-cover shadow"
               />

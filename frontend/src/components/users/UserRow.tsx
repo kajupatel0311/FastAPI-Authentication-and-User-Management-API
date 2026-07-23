@@ -6,6 +6,9 @@ type UserRowProps = {
   onDelete: (user: UserProfile) => void;
 };
 
+const IMAGE_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL.replace("/api/v1", "");
+
 function UserRow({
   user,
   onEdit,
@@ -23,7 +26,7 @@ function UserRow({
           {user.profile_image ? (
 
             <img
-              src={`http://127.0.0.1:8000${user.profile_image}`}
+              src={`${IMAGE_BASE_URL}${user.profile_image}`}
               alt={user.name}
               className="h-10 w-10 rounded-full border border-slate-200 object-cover"
             />
@@ -52,7 +55,7 @@ function UserRow({
 
       </td>
 
-      <td className="px-6 py-4 text-sm text-slate-600 break-all">
+      <td className="break-all px-6 py-4 text-sm text-slate-600">
 
         {user.email}
 
@@ -107,4 +110,3 @@ function UserRow({
 }
 
 export default UserRow;
-
