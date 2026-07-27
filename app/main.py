@@ -38,7 +38,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "https://fast-api-authentication-and-user-ma-ten.vercel.app",
+        "https://fast-api-authentication-and-user-ma-eta.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
