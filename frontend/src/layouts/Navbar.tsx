@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 
-import { getMyProfile } from "../../api/userApi";
-
-import type { UserProfile } from "../../types/user";
-
+import { getMyProfile } from "../api/userApi";
+import type { UserProfile } from "../types/user";
 const IMAGE_BASE_URL =
   import.meta.env.VITE_API_BASE_URL.replace("/api/v1", "");
 
