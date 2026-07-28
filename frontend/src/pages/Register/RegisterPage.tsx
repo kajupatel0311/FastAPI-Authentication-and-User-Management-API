@@ -22,10 +22,9 @@ const registerSchema = z
 
     password: z
       .string()
-      .min(6, "Password must be at least 6 characters"),
+      .min(8, "Password must be at least 8 characters"),
 
-    confirmPassword: z
-      .string(),
+    confirmPassword: z.string(),
   })
   .refine(
     (data) => data.password === data.confirmPassword,
@@ -43,8 +42,7 @@ function RegisterPage() {
 
   const [loading, setLoading] = useState(false);
 
-  const [showPassword, setShowPassword] =
-    useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [showConfirmPassword, setShowConfirmPassword] =
     useState(false);
@@ -57,9 +55,7 @@ function RegisterPage() {
     resolver: zodResolver(registerSchema),
   });
 
-  async function onSubmit(
-    data: RegisterFormData
-  ) {
+  async function onSubmit(data: RegisterFormData) {
 
     try {
 
@@ -69,7 +65,6 @@ function RegisterPage() {
         name: data.name,
         email: data.email,
         password: data.password,
-        role: "user",
       });
 
       toast.success("Account created successfully.");
@@ -78,21 +73,34 @@ function RegisterPage() {
 
     } catch (error: any) {
 
-  toast.error(
-    error?.response?.data?.detail ??
-    error?.response?.data?.message ??
-    "Registration failed."
-  );
+      console.error(error.response?.data);
 
-} finally {
+      const detail = error?.response?.data?.detail;
 
-  setLoading(false);
+      if (Array.isArray(detail)) {
 
-}
+        toast.error(detail[0]?.msg ?? "Registration failed.");
+
+      } else {
+
+        toast.error(
+          detail ??
+          error?.response?.data?.message ??
+          "Registration failed."
+        );
+
+      }
+
+    } finally {
+
+      setLoading(false);
+
+    }
 
   }
 
   return (
+
     <div className="flex min-h-screen items-center justify-center bg-slate-100">
 
       <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
@@ -213,7 +221,9 @@ function RegisterPage() {
             disabled={loading}
             className="w-full rounded-lg bg-indigo-600 p-3 font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-70"
           >
-            {loading ? "Creating Account..." : "Register"}
+            {loading
+              ? "Creating Account..."
+              : "Register"}
           </button>
 
         </form>
@@ -234,7 +244,9 @@ function RegisterPage() {
       </div>
 
     </div>
+
   );
+
 }
 
 export default RegisterPage;
